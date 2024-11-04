@@ -13,8 +13,20 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Represents a permission within the application.
+ * <p>
+ * This entity defines a permission that can be granted to roles. Each permission has a unique identifier,
+ * a name, and an optional description. Additionally, the entity tracks the creation and update timestamps.
+ * The relationship with role permissions is captured through the {@link RolePermission} entity.
+ * </p>
+ *
+ * <p>
+ * Author: Venkat
+ * </p>
+ */
 @Entity
-@Table(name="permissions")
+@Table(name = "permissions")
 @Getter
 @Setter
 @ToString
@@ -26,38 +38,51 @@ public class Permission {
     private Long id;
 
     @NotBlank
-    @Column(name="permission_name")
+    @Column(name = "permission_name")
     private String permissionName;
 
     @Lob
     private String description;
 
     @CreationTimestamp
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-
     @UpdateTimestamp
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private String updatedAt;
 
-    @OneToMany(mappedBy="permission")
+    @OneToMany(mappedBy = "permission")
     @ToString.Exclude
     private Set<RolePermission> rolePermissions = new HashSet<>();
 
+    /**
+     * Compares this Permission object to another object for equality.
+     *
+     * @param o the object to be compared
+     * @return true if this Permission is the same as the other object, false otherwise
+     */
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ?
+                ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+                ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         Permission that = (Permission) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
+    /**
+     * Returns a hash code value for this Permission object.
+     *
+     * @return a hash code value for this Permission
+     */
     @Override
     public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+        return this instanceof HibernateProxy ?
+                ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
