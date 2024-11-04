@@ -58,6 +58,7 @@ public class JwtValidator extends OncePerRequestFilter {
                         .getBody();
 
                 String email = String.valueOf(claims.get("email"));
+                System.out.println(email);
                 Long userId = claims.get("userId", Long.class);
 
                 // Extract authorities from claims for RBAC implementation
