@@ -71,9 +71,9 @@ The application should now be running on `http://localhost:8080`
 src/
 ├── main/
 │   ├── java/
-│   │   └── com/
-│   │       └── scaler/
-│   │           └── yugantaar/
+│   │   └── io/
+│   │       └── github/venkat1701/
+│   │           └── yugantaarbackend/
 │   │               ├── config/
 │   │               ├── controllers/
 │   │               ├── dto/
