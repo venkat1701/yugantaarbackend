@@ -128,7 +128,7 @@ git push origin feature/amazing-feature
 - Update documentation if necessary
 
 ## Contact
-- Project Owner: Krish Jaiswal (Venkat) - [LinkedIn](https://linkedin.com/in/jaiswal-krish)
+- Project Initializer and Maintainer: Krish Jaiswal (Venkat) - [LinkedIn](https://linkedin.com/in/jaiswal-krish)
 - Project Supervisor: Abhinav Gupta (Tech Committee Head) - [GitHub](https://github.com/abhinavgupta-de)
 
 ## License
