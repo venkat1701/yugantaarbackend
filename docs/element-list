@@ -1,6 +1,10 @@
 io.github.venkat1701.yugantaarbackend
 io.github.venkat1701.yugantaarbackend.config.security
+io.github.venkat1701.yugantaarbackend.controllers.core.users
+io.github.venkat1701.yugantaarbackend.controllers.implementation.users
+io.github.venkat1701.yugantaarbackend.dto.registrations
 io.github.venkat1701.yugantaarbackend.dto.users
+io.github.venkat1701.yugantaarbackend.dto.users.auth
 io.github.venkat1701.yugantaarbackend.exceptions.core
 io.github.venkat1701.yugantaarbackend.exceptions.implementation.events
 io.github.venkat1701.yugantaarbackend.exceptions.implementation.payments
@@ -16,6 +20,7 @@ io.github.venkat1701.yugantaarbackend.models.users
 io.github.venkat1701.yugantaarbackend.models.venues
 io.github.venkat1701.yugantaarbackend.repositories.roles
 io.github.venkat1701.yugantaarbackend.repositories.users
-io.github.venkat1701.yugantaarbackend.services.users.core
-io.github.venkat1701.yugantaarbackend.services.users.implementation
+io.github.venkat1701.yugantaarbackend.services.core.commons
+io.github.venkat1701.yugantaarbackend.services.core.users
+io.github.venkat1701.yugantaarbackend.services.implementation.users
 io.github.venkat1701.yugantaarbackend.utilities.security.jwt
