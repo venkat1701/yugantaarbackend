@@ -1,12 +1,18 @@
-package io.github.venkat1701.yugantaarbackend.services.users.core;
+package io.github.venkat1701.yugantaarbackend.services.core.users;
 
-import io.github.venkat1701.yugantaarbackend.dto.users.UserRegistrationDTO;
+import io.github.venkat1701.yugantaarbackend.dto.registrations.RegistrationDTO;
+import io.github.venkat1701.yugantaarbackend.dto.users.auth.GuestSignupDTO;
 import io.github.venkat1701.yugantaarbackend.models.users.User;
+import io.github.venkat1701.yugantaarbackend.services.core.commons.GenericCrudService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface for user-related operations in the application.
@@ -19,7 +25,7 @@ import java.util.Collection;
  * Author: Venkat
  * </p>
  */
-public interface UserService {
+public interface UserService extends GenericCrudService<User, Long> {
 
     /**
      * Loads a user by their username for authentication.
@@ -49,16 +55,9 @@ public interface UserService {
     /**
      * Registers a new user based on the provided registration data.
      *
-     * @param userRegistrationDTO the data transfer object containing user registration details
+     * @param registrationDTO the data transfer object containing user registration details
      * @return the newly registered User object
      */
-    User registerUser(UserRegistrationDTO userRegistrationDTO);
+    User registerUser(GuestSignupDTO registrationDTO);
 
-    /**
-     * Creates an administrator user based on the provided input data.
-     *
-     * @param input the data transfer object containing administrator user details
-     * @return the newly created administrator User object
-     */
-    User createAdministrator(UserRegistrationDTO input);
 }

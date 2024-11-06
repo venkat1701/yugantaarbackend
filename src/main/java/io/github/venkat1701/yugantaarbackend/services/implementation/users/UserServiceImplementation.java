@@ -1,14 +1,17 @@
-package io.github.venkat1701.yugantaarbackend.services.users.implementation;
+package io.github.venkat1701.yugantaarbackend.services.implementation.users;
 
-import io.github.venkat1701.yugantaarbackend.dto.users.UserRegistrationDTO;
+import io.github.venkat1701.yugantaarbackend.dto.users.auth.GuestSignupDTO;
 import io.github.venkat1701.yugantaarbackend.models.roles.Role;
 import io.github.venkat1701.yugantaarbackend.models.roles.RolesEnum;
 import io.github.venkat1701.yugantaarbackend.models.users.User;
+import io.github.venkat1701.yugantaarbackend.models.users.UserProfile;
 import io.github.venkat1701.yugantaarbackend.repositories.roles.RoleRepository;
 import io.github.venkat1701.yugantaarbackend.repositories.users.UserRepository;
-import io.github.venkat1701.yugantaarbackend.services.users.core.UserService;
+import io.github.venkat1701.yugantaarbackend.services.core.users.UserService;
 import io.github.venkat1701.yugantaarbackend.utilities.security.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -108,32 +112,72 @@ public class UserServiceImplementation implements UserService {
     /**
      * Registers a new user based on the provided registration data.
      *
-     * @param userRegistrationDTO the data transfer object containing user registration details
+     * @param guestSignupDTO the data transfer object containing user registration details
      * @return the newly registered User object, or null if the role is not found
      */
     @Override
-    public User registerUser(UserRegistrationDTO userRegistrationDTO) {
+    public User registerUser(GuestSignupDTO guestSignupDTO) {
         Optional<Role> role = roleRepository.findByRoleName(RolesEnum.USER.name());
         if (!role.isPresent()) {
             return null; // Role not found, registration cannot proceed
         }
 
+        // Creating a UserProfile instance.
+        UserProfile userProfile = new UserProfile();
+        userProfile.setFirstName(guestSignupDTO.getFirstName());
+        userProfile.setLastName(guestSignupDTO.getLastName());
+        userProfile.setPhoneNumber(guestSignupDTO.getPhoneNumber());
+        userProfile.setAddress(guestSignupDTO.getAddress());
+        userProfile.setProfilePictureURI(guestSignupDTO.getProfilePictureURI());
+        userProfile.setDateOfBirth(guestSignupDTO.getDateOfBirth());
+        userProfile.setCreatedAt(LocalDateTime.now());
+        userProfile.setUpdatedAt(LocalDateTime.now());
+
+
         User user = new User();
-        user.setEmail(userRegistrationDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
+        user.setEmail(guestSignupDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(guestSignupDTO.getPassword()));
         user.setRoles(Set.of(role.get()));
-        user.setUserProfile(null); // Assuming user profile is not set during registration
+        user.setUserProfile(userProfile);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setRegistrations(new HashSet<>());
+        user.setPayments(new HashSet<>());
+
+        // Saving the user to database.
         return userRepository.save(user);
     }
 
-    /**
-     * Creates a new administrator user based on the provided input data.
-     *
-     * @param input the data transfer object containing administrator user details
-     * @return the newly created administrator User object, or null if not implemented
-     */
     @Override
-    public User createAdministrator(UserRegistrationDTO input) {
-        return null; // Not yet implemented
+    public Page<User> search(PageRequest pageRequest) {
+        return this.userRepository.findAll(pageRequest);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return this.userRepository.findAll();
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return this.userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<User> update(Long id, User user) {
+        if(this.userRepository.existsById(id)) {
+            return Optional.of(userRepository.save(user));
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if(userRepository.existsById(id)) {
+            this.userRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

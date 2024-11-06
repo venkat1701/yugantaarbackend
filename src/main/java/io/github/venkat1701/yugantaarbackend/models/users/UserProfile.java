@@ -5,10 +5,12 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.cglib.core.Local;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -128,7 +130,7 @@ public class UserProfile {
      */
     @CreationTimestamp
     @Column(name = "created_at")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     /**
      * Timestamp indicating when the user profile was last updated.
@@ -138,7 +140,7 @@ public class UserProfile {
      */
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
     @Override
     public final boolean equals(Object o) {

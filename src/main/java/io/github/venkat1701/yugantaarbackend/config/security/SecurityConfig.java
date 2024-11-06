@@ -50,7 +50,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/api/**").authenticated(); // Protect API endpoints
                     requests.anyRequest().permitAll(); // Allow all other requests
                 })
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class) // Add JWT validation filter

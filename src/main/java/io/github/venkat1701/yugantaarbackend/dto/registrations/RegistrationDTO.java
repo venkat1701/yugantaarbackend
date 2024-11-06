@@ -1,46 +1,40 @@
-package io.github.venkat1701.yugantaarbackend.dto.users;
+package io.github.venkat1701.yugantaarbackend.dto.registrations;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * Data Transfer Object (DTO) for user registration.
  * <p>
  * This class is used to encapsulate the data required for registering a new user in the system.
- * It includes fields for personal information such as name, email, password, and contact details.
+ * It includes fields for personal information such as username, email, and password.
  * </p>
  *
  * <p>
- * Author: Venkat
+ * @author Venkat
  * </p>
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegistrationDTO {
+public class RegistrationDTO {
 
     /**
-     * The first name of the user.
+     * The username of the user.
      * <p>
      * This field is mandatory and cannot be left blank.
      * </p>
      */
-    @NotBlank(message = "First name is required.")
-    private String firstName;
-
-    /**
-     * The last name of the user.
-     * <p>
-     * This field is mandatory and cannot be left blank.
-     * </p>
-     */
-    @NotBlank(message = "Last name is required.")
-    private String lastName;
+    @NotBlank(message = "Username is required.")
+    @Size(max = 255, message = "Username must be less than 255 characters.")
+    private String username;
 
     /**
      * The email address of the user.
@@ -49,6 +43,8 @@ public class UserRegistrationDTO {
      * </p>
      */
     @NotBlank(message = "Email is required.")
+    @Email(message = "Email must be a valid email address.")
+    @Size(max = 255, message = "Email must be less than 255 characters.")
     private String email;
 
     /**
@@ -58,21 +54,6 @@ public class UserRegistrationDTO {
      * </p>
      */
     @NotBlank(message = "Password is required.")
+    @Size(min = 8, message = "Password must be at least 8 characters long.")
     private String password;
-
-    /**
-     * The phone number of the user.
-     * <p>
-     * This field is optional and can be used for account recovery and communication.
-     * </p>
-     */
-    private String phone;
-
-    /**
-     * The gender of the user.
-     * <p>
-     * This field is optional and can be used for demographic information.
-     * </p>
-     */
-    private String gender;
 }
