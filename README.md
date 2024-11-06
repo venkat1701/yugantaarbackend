@@ -31,6 +31,7 @@ Before running this project, make sure you have the following installed:
 - Maven 3.6 or later
 - PostgreSQL 13 or later
 - Git
+- Refer to this schema for Yugantaar in order to work with the application: https://dbdocs.io/thejeastdev/yugantaar-schema
 
 ## Setup & Installation
 
