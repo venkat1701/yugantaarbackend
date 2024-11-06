@@ -76,12 +76,22 @@ src/
 │   │       └── github/venkat1701/
 │   │           └── yugantaarbackend/
 │   │               ├── config/
+│   │                 ├── security
 │   │               ├── controllers/
+│   │                 ├── core/
+│   │                   ├── users/
+│   │                   ├── events/
+│   │                 ├── implementation/
 │   │               ├── dto/
+│   │                 ├── users/
 │   │               ├── exceptions/
+│   │                 ├── core/
+│   │                 ├── implementation/
 │   │               ├── models/
 │   │               ├── repositories/
 │   │               ├── services/
+│   │                 ├── core/
+│   │                 ├── implementation/
 │   │               └── YugantaarApplication.java
 │   └── resources/
 │       └── application.properties
