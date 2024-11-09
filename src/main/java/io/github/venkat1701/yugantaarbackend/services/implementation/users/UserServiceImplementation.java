@@ -8,6 +8,10 @@ import io.github.venkat1701.yugantaarbackend.models.users.UserProfile;
 import io.github.venkat1701.yugantaarbackend.repositories.roles.RoleRepository;
 import io.github.venkat1701.yugantaarbackend.repositories.users.UserRepository;
 import io.github.venkat1701.yugantaarbackend.services.core.users.UserService;
+import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresUserDeletePermission;
+import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresUserListPermission;
+import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresUserReadPermission;
+import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresUserUpdatePermission;
 import io.github.venkat1701.yugantaarbackend.utilities.security.jwt.JwtProvider;
 import io.github.venkat1701.yugantaarbackend.utilities.userdetails.YugantaarUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +107,7 @@ public class UserServiceImplementation implements UserService {
      * @throws Exception if the JWT is invalid or the user cannot be found
      */
     @Override
+    @RequiresUserReadPermission
     public User findUserProfileByJwt(String jwt) throws Exception {
         String email = jwtProvider.getEmailFromToken(jwt);
         User user = userRepository.findByEmail(email)
@@ -150,11 +155,13 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    @RequiresUserListPermission
     public Page<User> search(PageRequest pageRequest) {
         return this.userRepository.findAll(pageRequest);
     }
 
     @Override
+    @RequiresUserListPermission
     public List<User> getAll() {
         return this.userRepository.findAll();
     }
@@ -165,6 +172,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    @RequiresUserUpdatePermission
     public Optional<User> update(Long id, User user) {
         if(this.userRepository.existsById(id)) {
             return Optional.of(userRepository.save(user));
@@ -174,6 +182,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    @RequiresUserDeletePermission
     public boolean delete(Long id) {
         if(userRepository.existsById(id)) {
             this.userRepository.deleteById(id);
