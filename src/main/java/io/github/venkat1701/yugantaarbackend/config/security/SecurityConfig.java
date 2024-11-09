@@ -50,7 +50,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management
                 .authorizeHttpRequests(requests -> {
-                    requests.anyRequest().permitAll(); // Allow all other requests
+                    requests.requestMatchers("/api/v1/users/**").hasAnyRole("PARTICIPANT", "MANAGER", "ADMIN", "SUPERADMIN");
+                    requests.requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN", "SUPERADMIN");
+                    requests.requestMatchers("/api/v1/superadmin/**").hasRole("SUPERADMIN");
+
                 })
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class) // Add JWT validation filter
                 .httpBasic(Customizer.withDefaults()) // Enable basic authentication
