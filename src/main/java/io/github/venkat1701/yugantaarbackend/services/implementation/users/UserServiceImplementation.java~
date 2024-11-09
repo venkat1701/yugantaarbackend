@@ -9,7 +9,6 @@ import io.github.venkat1701.yugantaarbackend.repositories.roles.RoleRepository;
 import io.github.venkat1701.yugantaarbackend.repositories.users.UserRepository;
 import io.github.venkat1701.yugantaarbackend.services.core.users.UserService;
 import io.github.venkat1701.yugantaarbackend.utilities.security.jwt.JwtProvider;
-import io.github.venkat1701.yugantaarbackend.utilities.userdetails.YugantaarUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -77,7 +76,7 @@ public class UserServiceImplementation implements UserService {
             for (Role role : roles) {
                 listAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
             }
-            return new YugantaarUserDetails(user);
+            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), listAuthorities);
         } catch (UsernameNotFoundException unfe) {
             unfe.printStackTrace();
             // Improvement in logging required. To be added after [YUGA-0003]
@@ -118,7 +117,7 @@ public class UserServiceImplementation implements UserService {
      */
     @Override
     public User registerUser(GuestSignupDTO guestSignupDTO) {
-        Optional<Role> role = roleRepository.findByRoleName(RolesEnum.GUEST.name());
+        Optional<Role> role = roleRepository.findByRoleName(RolesEnum.USER.name());
         if (!role.isPresent()) {
             return null; // Role not found, registration cannot proceed
         }
