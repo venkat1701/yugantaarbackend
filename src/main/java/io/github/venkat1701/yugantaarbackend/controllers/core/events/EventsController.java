@@ -1,5 +1,7 @@
 package io.github.venkat1701.yugantaarbackend.controllers.core.events;
 
+import io.github.venkat1701.yugantaarbackend.models.events.Event;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +21,7 @@ public interface EventsController<MODEL, DTO, ID> {
 
     ResponseEntity<Void> delete(@PathVariable ID id);
 
-    ResponseEntity<List<MODEL>> search(@RequestParam int page, @RequestParam int size, @RequestParam String sort);
+    ResponseEntity<Page<Event>> search(@RequestParam int page, @RequestParam int size, @RequestParam String sort);
 
     ResponseEntity<MODEL> getByName(@RequestParam String name);
 

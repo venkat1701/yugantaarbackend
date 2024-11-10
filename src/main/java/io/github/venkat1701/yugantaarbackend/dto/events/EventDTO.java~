@@ -1,0 +1,26 @@
+package io.github.venkat1701.yugantaarbackend.dto.events;
+
+import io.github.venkat1701.yugantaarbackend.models.venues.Venue;
+import jakarta.annotation.Nonnull;
+import lombok.*;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class EventDTO {
+
+    private String name;
+    private String description;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private String location;
+    private String venueName;
+    private int ticketPrice;
+    private boolean isFeatured;
+
+
+}

@@ -53,7 +53,7 @@ public class Event {
 
     @NotNull
     @Column(name = "end_date")
-    private String endDate;
+    private LocalDateTime endDate;
 
     @NotBlank
     private String location;
