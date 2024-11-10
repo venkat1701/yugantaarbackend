@@ -34,6 +34,7 @@ public interface UserService extends GenericCrudService<User, Long> {
      * @return a UserDetails object containing the user's information
      * @throws UsernameNotFoundException if the user with the given username cannot be found
      */
+
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
     /**

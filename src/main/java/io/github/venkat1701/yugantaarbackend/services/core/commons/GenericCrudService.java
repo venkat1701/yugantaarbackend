@@ -56,4 +56,6 @@ public interface GenericCrudService<T, ID> {
      * @return `true` if the entity was deleted, `false` if the entity was not found
      */
     boolean delete(ID id);
+
+
 }
