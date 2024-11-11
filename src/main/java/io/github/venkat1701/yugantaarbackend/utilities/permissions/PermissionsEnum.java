@@ -46,7 +46,13 @@ public enum PermissionsEnum {
     PERMISSION_ASSIGN("Assigns Permission", Set.of(SUPERADMIN)),
     PERMISSION_REVOKE("Revokes Permission", Set.of(SUPERADMIN)),
 
-    REPORT_GENERATE("Generates Report", Set.of(MANAGER, ADMIN, SUPERADMIN));
+    REPORT_GENERATE("Generates Report", Set.of(MANAGER, ADMIN, SUPERADMIN)),
+
+    VENUE_CREATE("Creates Venue", Set.of(MANAGER, ADMIN, SUPERADMIN)),
+    VENUE_READ("Reads Venue", Set.of(GUEST, PARTICIPANT, MANAGER, ADMIN, SUPERADMIN)),
+    VENUE_UPDATE("Updates Venue", Set.of(MANAGER, ADMIN, SUPERADMIN)),
+    VENUE_DELETE("Deletes Venue", Set.of(MANAGER, ADMIN, SUPERADMIN)),
+    VENUE_LIST("Lists Venue", Set.of(MANAGER, ADMIN, SUPERADMIN));
 
 
 

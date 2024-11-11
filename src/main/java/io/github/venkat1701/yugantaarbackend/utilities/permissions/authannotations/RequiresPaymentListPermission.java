@@ -2,6 +2,6 @@ package io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotati
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@PreAuthorize("hasAnyRole('SUPERADMIN', ' ADMIN', ' MANAGER')")
+@PreAuthorize("hasAnyRole('SUPERADMIN',' ADMIN',' MANAGER')")
 public @interface RequiresPaymentListPermission {
 }
