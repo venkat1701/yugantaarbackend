@@ -18,7 +18,7 @@ public class AnnotationGenerator {
                    var annotationName = "Requires"+getCamelCaseName(permission.name())+"Permission";
                    String[] roles = permUtility.getRolesForPermission(permission);
                    String rolesSpEL = String.join(", ", roles);
-                   var preAuthValue = "hasAnyRole('"+rolesSpEL.replace(",", "', '")+"')";
+                   var preAuthValue = "hasAnyRole('"+rolesSpEL.replace(",", "','")+"')";
                    AnnotationSpec annotation = AnnotationSpec.builder(PreAuthorize.class)
                            .addMember("value", "$S", preAuthValue)
                            .build();
