@@ -67,7 +67,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      * @return a {@link ResponseEntity} containing the event if found, or HTTP status code 404 (Not Found) if not found
      */
     @Override
-    @GetMapping("/{id")
+    @GetMapping("/{id}")
     public ResponseEntity<Event> getById(@PathVariable Long aLong) {
         return this.eventService.findById(aLong)
                 .map(event -> ResponseEntity.status(HttpStatus.OK).body(event))

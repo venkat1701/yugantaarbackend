@@ -52,7 +52,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> {
                     requests.requestMatchers("/api/v1/users/**").hasAnyRole("PARTICIPANT", "MANAGER", "ADMIN", "SUPERADMIN");
                     requests.requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN", "SUPERADMIN");
-                    requests.requestMatchers("/api/v1/superadmin/**").hasRole("SUPERADMIN");
+//                    requests.requestMatchers("/api/v1/superadmin/**").hasRole("SUPERADMIN");
+                    requests.requestMatchers("/api/v1/superadmin/roles/**").hasAnyRole("SUPERADMIN");
 
                 })
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class) // Add JWT validation filter
