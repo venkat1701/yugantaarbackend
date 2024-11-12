@@ -4,6 +4,7 @@ import io.github.venkat1701.yugantaarbackend.utilities.security.jwt.JwtValidator
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,7 +34,8 @@ import java.util.Arrays;
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     /**
@@ -50,11 +52,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/api/v1/users/**").hasAnyRole("PARTICIPANT", "MANAGER", "ADMIN", "SUPERADMIN");
-                    requests.requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN", "SUPERADMIN");
-//                    requests.requestMatchers("/api/v1/superadmin/**").hasRole("SUPERADMIN");
-                    requests.requestMatchers("/api/v1/superadmin/roles/**").hasAnyRole("SUPERADMIN");
-
+                    requests.anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class) // Add JWT validation filter
                 .httpBasic(Customizer.withDefaults()) // Enable basic authentication

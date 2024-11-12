@@ -63,6 +63,7 @@ public class JwtValidator extends OncePerRequestFilter {
 
                 // Extract authorities from claims for RBAC implementation
                 String authorities = String.valueOf(claims.get("authorities"));
+                System.out.println(authorities);
                 List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
                 // Create authentication object with user details and roles

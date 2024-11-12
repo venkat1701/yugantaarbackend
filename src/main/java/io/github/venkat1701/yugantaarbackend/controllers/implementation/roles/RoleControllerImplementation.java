@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,27 +39,27 @@ public class RoleControllerImplementation implements RolesController<Role, RoleD
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<Role> getById(@PathVariable Long aLong) {
-        if(this.roleService.findById(aLong).isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(this.roleService.findById(aLong).get());
+    public ResponseEntity<Role> getById(@PathVariable Long id) {
+        if(this.roleService.findById(id).isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(this.roleService.findById(id).get());
         }
         return ResponseEntity.notFound().build();
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<Role> update(@PathVariable Long aLong,@RequestBody Role entity) {
-        if(this.roleService.findById(aLong).isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(this.roleService.update(aLong, entity).get());
+    public ResponseEntity<Role> update(@PathVariable Long id,@RequestBody Role entity) {
+        if(this.roleService.findById(id).isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(this.roleService.update(id, entity).get());
         }
         return ResponseEntity.notFound().build();
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long aLong) {
-        if(this.roleService.findById(aLong).isPresent()) {
-            this.roleService.delete(aLong);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if(this.roleService.findById(id).isPresent()) {
+            this.roleService.delete(id);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();

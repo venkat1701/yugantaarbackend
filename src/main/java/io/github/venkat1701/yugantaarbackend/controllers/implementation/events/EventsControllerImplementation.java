@@ -4,6 +4,7 @@ import io.github.venkat1701.yugantaarbackend.controllers.core.events.EventsContr
 import io.github.venkat1701.yugantaarbackend.dto.events.EventDTO;
 import io.github.venkat1701.yugantaarbackend.models.events.Event;
 import io.github.venkat1701.yugantaarbackend.services.core.events.EventService;
+import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -45,6 +46,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      */
     @Override
     @PostMapping("/create")
+    @RequiresEventCreatePermission
     public ResponseEntity<Event> create(@RequestBody EventDTO entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.eventService.registerEvent(entity));
     }
@@ -56,6 +58,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      */
     @Override
     @GetMapping("/all")
+    @RequiresEventReadPermission
     public ResponseEntity<List<Event>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(this.eventService.getAll());
     }
@@ -68,6 +71,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      */
     @Override
     @GetMapping("/{id}")
+    @RequiresEventReadPermission
     public ResponseEntity<Event> getById(@PathVariable Long aLong) {
         return this.eventService.findById(aLong)
                 .map(event -> ResponseEntity.status(HttpStatus.OK).body(event))
@@ -84,6 +88,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      */
     @Override
     @PutMapping("/{id}")
+    @RequiresEventUpdatePermission
     public ResponseEntity<Event> update(@PathVariable Long id,@RequestBody Event entity) {
         if (this.eventService.findById(id).isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(this.eventService.update(id, entity).get());
@@ -100,6 +105,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      */
     @Override
     @DeleteMapping("/{id}")
+    @RequiresEventDeletePermission
     public ResponseEntity<Void> delete(@PathVariable Long aLong) {
         if (this.eventService.delete(aLong)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -118,6 +124,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      */
     @Override
     @GetMapping("/search")
+    @RequiresEventReadPermission
     public ResponseEntity<Page<Event>> search(@RequestParam int page,@RequestParam int size,@RequestParam String sort) {
         PageRequest pageRequest;
         if (sort != null && !sort.isEmpty()) {
@@ -141,6 +148,7 @@ public class EventsControllerImplementation implements EventsController<Event, E
      */
     @Override
     @GetMapping("/{name}")
+    @RequiresEventReadPermission
     public ResponseEntity<Event> getByName(@PathVariable String name) {
         return this.eventService.findByName(name)
                 .map(event -> ResponseEntity.status(HttpStatus.OK).body(event))

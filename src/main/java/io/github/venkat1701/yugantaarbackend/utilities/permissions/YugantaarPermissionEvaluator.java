@@ -43,7 +43,7 @@ public class YugantaarPermissionEvaluator implements PermissionEvaluator {
                 .map(auth -> (YugantaarGrantedAuthority) auth)
                 .anyMatch(auth ->
                         (auth.getType().equals("PERMISSION") && auth.getAuthority().equals(requiredPerms)) ||
-                                (auth.getType().equals("ROLE") && auth.getAuthority().equals("ROLE_SUPER_ADMIN"))
+                                (auth.getType().equals("ROLE") && auth.getAuthority().equals("ROLE_SUPERADMIN"))
                 );
     }
 

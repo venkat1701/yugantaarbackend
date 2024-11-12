@@ -31,7 +31,6 @@ public class RoleServiceImplementation implements RoleService {
      * @return a `Page` of roles
      */
     @Override
-    @RequiresRoleReadPermission
     public Page<Role> search(PageRequest pageRequest) {
         return this.roleRepository.findAll(pageRequest);
     }
