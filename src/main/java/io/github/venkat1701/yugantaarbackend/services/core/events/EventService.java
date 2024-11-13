@@ -18,7 +18,7 @@ import java.util.Optional;
  * Author: Venkat
  * </p>
  */
-public interface EventService extends GenericCrudService<Event, Long> {
+public interface EventService extends GenericCrudService<EventDTO, Long> {
 
     /**
      * Searches for events with pagination support.
@@ -26,14 +26,14 @@ public interface EventService extends GenericCrudService<Event, Long> {
      * @param pageRequest an object that specifies the pagination information, such as page number and size
      * @return a paginated list of events
      */
-    Page<Event> search(PageRequest pageRequest);
+    Page<EventDTO> search(PageRequest pageRequest);
 
     /**
      * Retrieves all events available in the database.
      *
      * @return a list of all events
      */
-    List<Event> getAll();
+    List<EventDTO> getAll();
 
     /**
      * Finds an event by its ID.
@@ -41,7 +41,7 @@ public interface EventService extends GenericCrudService<Event, Long> {
      * @param id the unique identifier of the event to find
      * @return an {@link Optional} containing the found event, or empty if not found
      */
-    Optional<Event> findById(Long id);
+    Optional<EventDTO> findById(Long id);
 
     /**
      * Updates an existing event by its ID.
@@ -50,7 +50,7 @@ public interface EventService extends GenericCrudService<Event, Long> {
      * @param event the event object containing updated information
      * @return an {@link Optional} containing the updated event if successful, or empty if not found
      */
-    Optional<Event> update(Long id, Event event);
+    Optional<EventDTO> update(Long id, EventDTO event);
 
     /**
      * Deletes an event by its ID.
@@ -66,7 +66,7 @@ public interface EventService extends GenericCrudService<Event, Long> {
      * @param name the name of the event to find
      * @return an {@link Optional} containing the found event, or empty if not found
      */
-    Optional<Event> findByName(String name);
+    Optional<EventDTO> findByName(String name);
 
     /**
      * Registers a new event based on the provided {@link EventDTO} object.
@@ -74,5 +74,5 @@ public interface EventService extends GenericCrudService<Event, Long> {
      * @param eventDTO the data transfer object containing the event details
      * @return the registered event entity
      */
-    Event registerEvent(EventDTO eventDTO);
+    EventDTO registerEvent(EventDTO eventDTO);
 }

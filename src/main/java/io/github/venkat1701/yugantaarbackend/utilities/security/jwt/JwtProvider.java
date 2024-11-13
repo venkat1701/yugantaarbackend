@@ -1,5 +1,7 @@
 package io.github.venkat1701.yugantaarbackend.utilities.security.jwt;
 
+import io.github.venkat1701.yugantaarbackend.models.roles.Role;
+import io.github.venkat1701.yugantaarbackend.models.users.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * JWT Provider service for generating and validating JSON Web Tokens (JWT).
@@ -71,5 +75,33 @@ public class JwtProvider {
         } catch (Exception e) {
             throw new BadCredentialsException("Invalid JWT Token"); // Handle invalid tokens
         }
+    }
+
+    public String generateToken(User user) {
+        SecretKey key = Keys.hmacShaKeyFor(JwtConstants.SECRET_KEY.getBytes());
+
+        // Extract roles
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toList());
+
+        // Extract permissions
+        List<String> permissions = user.getRoles().stream()
+                .flatMap(role -> role.getRolePermissions().stream())
+                .map(permission -> permission.getPermission().getPermissionName())
+                .collect(Collectors.toList());
+
+        String token = Jwts.builder()
+                .setSubject("Yugantaar JWT Token")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 24 hours
+                .claim("email", user.getEmail())
+                .claim("userId", user.getId())
+                .claim("roles", roles)
+                .claim("permissions", permissions)
+                .signWith(key)
+                .compact();
+
+        return token;
     }
 }

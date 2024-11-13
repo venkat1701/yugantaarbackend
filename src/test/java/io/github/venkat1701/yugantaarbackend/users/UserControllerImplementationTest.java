@@ -1,6 +1,7 @@
 package io.github.venkat1701.yugantaarbackend.users;
 
 import io.github.venkat1701.yugantaarbackend.controllers.implementation.users.UserControllerImplementation;
+import io.github.venkat1701.yugantaarbackend.dto.users.UserDTO;
 import io.github.venkat1701.yugantaarbackend.dto.users.auth.GuestSignupDTO;
 import io.github.venkat1701.yugantaarbackend.models.users.User;
 import io.github.venkat1701.yugantaarbackend.services.core.users.UserService;
@@ -49,10 +50,10 @@ class UserControllerImplementationTest {
     @Test
     void givenUserServiceRegistersUser_whenCreateUser_thenReturnCreatedUser() {
         // Given
-        when(userService.registerUser(any(GuestSignupDTO.class))).thenReturn(mockUser);
+        when(userService.registerUser(any(GuestSignupDTO.class))).thenReturn(mockSignupDTO);
 
         // When
-        ResponseEntity<User> response = userController.create(mockSignupDTO);
+        ResponseEntity<UserDTO> response = userController.create(mockSignupDTO);
 
         // Then
         assertAll(

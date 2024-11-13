@@ -2,6 +2,10 @@ package io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotati
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@PreAuthorize("hasAnyRole('SUPERADMIN')")
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
+@PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN')")
 public @interface RequiresRoleUpdatePermission {
 }

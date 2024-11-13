@@ -1,9 +1,13 @@
 package io.github.venkat1701.yugantaarbackend.config.security;
 
+import io.github.venkat1701.yugantaarbackend.utilities.permissions.YugantaarPermissionEvaluator;
 import io.github.venkat1701.yugantaarbackend.utilities.security.jwt.JwtValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,7 +38,11 @@ import java.util.Arrays;
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true
+
+)
 public class SecurityConfig {
 
     /**
@@ -50,15 +59,20 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/api/v1/users/**").hasAnyRole("PARTICIPANT", "MANAGER", "ADMIN", "SUPERADMIN");
-                    requests.requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN", "SUPERADMIN");
-                    requests.requestMatchers("/api/v1/superadmin/**").hasRole("SUPERADMIN");
-
+                    requests.anyRequest().authenticated();
                 })
-                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class) // Add JWT validation filter
+                .addFilterBefore(new JwtValidator(), UsernamePasswordAuthenticationFilter.class) // Add JWT validation filter
                 .httpBasic(Customizer.withDefaults()) // Enable basic authentication
                 .formLogin(Customizer.withDefaults()) // Enable form login
                 .build();
+    }
+
+    @Bean
+    public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler =
+                new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(new YugantaarPermissionEvaluator());
+        return expressionHandler;
     }
 
     /**

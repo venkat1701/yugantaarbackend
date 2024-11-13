@@ -2,6 +2,6 @@ package io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotati
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@PreAuthorize("hasAnyRole('SUPERADMIN',' PARTICIPANT',' MANAGER',' ADMIN')")
+@PreAuthorize("hasAnyRole('MANAGER',' SUPERADMIN',' PARTICIPANT',' ADMIN')")
 public @interface RequiresRegistrationReadOwnPermission {
 }

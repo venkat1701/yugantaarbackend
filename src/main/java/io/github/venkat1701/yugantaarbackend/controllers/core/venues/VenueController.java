@@ -11,7 +11,7 @@ public interface VenueController<MODEL, DTO, ID> {
     @PostMapping("/create")
     ResponseEntity<MODEL> create(@RequestBody DTO entity);
 
-    @GetMapping
+    @GetMapping("/all")
     ResponseEntity<List<MODEL>> getAll();
 
     @GetMapping("/{id}")
