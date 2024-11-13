@@ -37,6 +37,7 @@ public class YugantaarPermissionEvaluator implements PermissionEvaluator {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String requiredPerms = (String) permission;
 
+        System.out.println("AUTHORITIES: "+authentication.getAuthorities());
         // Check if the user has the required permission or is a super admin.
         return authorities.stream()
                 .filter(auth -> auth instanceof YugantaarGrantedAuthority)

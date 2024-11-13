@@ -1,5 +1,6 @@
 package io.github.venkat1701.yugantaarbackend.controllers.core.events;
 
+import io.github.venkat1701.yugantaarbackend.dto.events.EventDTO;
 import io.github.venkat1701.yugantaarbackend.models.events.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -11,18 +12,18 @@ import java.util.List;
 
 public interface EventsController<MODEL, DTO, ID> {
 
-    ResponseEntity<MODEL> create(@RequestBody DTO entity);
+    ResponseEntity<DTO> create(@RequestBody DTO entity);
 
-    ResponseEntity<List<MODEL>> getAll();
+    ResponseEntity<List<DTO>> getAll();
 
-    ResponseEntity<MODEL> getById(@PathVariable ID id);
+    ResponseEntity<DTO> getById(@PathVariable ID id);
 
-    ResponseEntity<MODEL> update(@PathVariable ID id, @RequestBody MODEL entity);
+    ResponseEntity<DTO> update(@PathVariable ID id, @RequestBody DTO entity);
 
     ResponseEntity<Void> delete(@PathVariable ID id);
 
-    ResponseEntity<Page<Event>> search(@RequestParam int page, @RequestParam int size, @RequestParam String sort);
+    ResponseEntity<Page<EventDTO>> search(@RequestParam int page, @RequestParam int size, @RequestParam String sort);
 
-    ResponseEntity<MODEL> getByName(@RequestParam String name);
+    ResponseEntity<DTO> getByName(@RequestParam String name);
 
 }

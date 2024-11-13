@@ -1,6 +1,7 @@
 package io.github.venkat1701.yugantaarbackend.services.implementation.events;
 
 import io.github.venkat1701.yugantaarbackend.dto.events.EventDTO;
+import io.github.venkat1701.yugantaarbackend.mappers.implementation.EventMapper;
 import io.github.venkat1701.yugantaarbackend.models.events.Event;
 import io.github.venkat1701.yugantaarbackend.models.venues.Venue;
 import io.github.venkat1701.yugantaarbackend.repositories.events.EventsRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation for managing events.
@@ -32,6 +34,7 @@ public class EventsServiceImplementation implements EventService{
 
     private final EventsRepository eventsRepository;
     private final VenueRepository venueRepository;
+    private final EventMapper eventMapper;
 
     /**
      * Constructs an instance of EventsServiceImplementation.
@@ -39,9 +42,10 @@ public class EventsServiceImplementation implements EventService{
      * @param eventsRepository the repository for accessing and managing event data
      * @param venueRepository the repository for accessing venue data
      */
-    public EventsServiceImplementation(EventsRepository eventsRepository, VenueRepository venueRepository) {
+    public EventsServiceImplementation(EventsRepository eventsRepository, VenueRepository venueRepository, EventMapper mapper) {
         this.eventsRepository = eventsRepository;
         this.venueRepository = venueRepository;
+        this.eventMapper = mapper;
     }
 
     /**
@@ -52,9 +56,11 @@ public class EventsServiceImplementation implements EventService{
      */
     @Override
     @RequiresEventReadPermission
-    public Page<Event> search(PageRequest pageRequest) {
-        return this.eventsRepository.findAll(pageRequest);
+    public Page<EventDTO> search(PageRequest pageRequest) {
+        Page<Event> eventPage = this.eventsRepository.findAll(pageRequest);
+        return eventPage.map(this.eventMapper::toDTO);
     }
+
 
     /**
      * Retrieves a list of all events.
@@ -63,8 +69,8 @@ public class EventsServiceImplementation implements EventService{
      */
     @Override
     @RequiresUserReadPermission
-    public List<Event> getAll() {
-        return this.eventsRepository.findAll();
+    public List<EventDTO> getAll() {
+        return this.eventsRepository.findAll().stream().map(this.eventMapper::toDTO).collect(Collectors.toList());
     }
 
     /**
@@ -75,8 +81,8 @@ public class EventsServiceImplementation implements EventService{
      */
     @Override
     @RequiresEventReadPermission
-    public Optional<Event> findById(Long id) {
-        return this.eventsRepository.findById(id);
+    public Optional<EventDTO> findById(Long id) {
+        return Optional.of(this.eventMapper.toDTO(this.eventsRepository.findById(id).get()));
     }
 
     /**
@@ -89,10 +95,9 @@ public class EventsServiceImplementation implements EventService{
     @Override
     @Transactional
     @RequiresEventUpdatePermission
-    public Optional<Event> update(Long id, Event event) {
+    public Optional<EventDTO> update(Long id, EventDTO event) {
         if (this.eventsRepository.existsById(id)) {
-            event.setId(id); // Ensures that the ID is set for updating
-            return Optional.of(this.eventsRepository.save(event));
+            return Optional.of(this.eventMapper.toDTO(this.eventsRepository.save(this.eventMapper.toEntity(event))));
         }
         return Optional.empty();
     }
@@ -115,9 +120,9 @@ public class EventsServiceImplementation implements EventService{
     }
 
     @Override
-    public Optional<Event> findByName(String name) {
+    public Optional<EventDTO> findByName(String name) {
         if(this.eventsRepository.existsByName(name)) {
-            return this.eventsRepository.findByName(name);
+            return Optional.of(this.eventMapper.toDTO(this.eventsRepository.findByName(name).get()));
         }
         return Optional.empty();
     }
@@ -130,7 +135,7 @@ public class EventsServiceImplementation implements EventService{
      */
     @Transactional
     @RequiresEventCreatePermission
-    public Event registerEvent(EventDTO eventDTO) {
+    public EventDTO registerEvent(EventDTO eventDTO) {
         // Validate and retrieve the venue from the repository
         Optional<Venue> venueOptional = this.venueRepository.findByName(eventDTO.getVenueName());
         if (venueOptional.isEmpty()) {
@@ -140,7 +145,7 @@ public class EventsServiceImplementation implements EventService{
         Event event = this.getEvent(eventDTO, venueOptional);
 
         // Save and return the newly created event
-        return this.eventsRepository.save(event);
+        return this.eventMapper.toDTO(this.eventsRepository.save(event));
     }
 
     @NotNull

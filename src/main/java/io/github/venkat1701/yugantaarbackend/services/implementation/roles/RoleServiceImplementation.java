@@ -4,12 +4,11 @@ import io.github.venkat1701.yugantaarbackend.dto.roles.RoleDTO;
 import io.github.venkat1701.yugantaarbackend.models.roles.Role;
 import io.github.venkat1701.yugantaarbackend.repositories.roles.RoleRepository;
 import io.github.venkat1701.yugantaarbackend.services.core.roles.RoleService;
-import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresRoleCreatePermission;
-import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresRoleDeletePermission;
-import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresRoleReadPermission;
-import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresRoleUpdatePermission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,52 +23,69 @@ public class RoleServiceImplementation implements RoleService {
         this.roleRepository = roleRepository;
     }
 
-    /**
-     * Retrieves a paginated list of roles based on the provided `PageRequest`.
-     *
-     * @param pageRequest the `PageRequest` object containing the pagination and sorting information
-     * @return a `Page` of roles
-     */
+    private boolean isSuperAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null &&
+                authentication.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_SUPERADMIN"));
+    }
+
     @Override
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public Page<Role> search(PageRequest pageRequest) {
+        if (!isSuperAdmin()) {
+            throw new SecurityException("Access denied: Requires ROLE_SUPERADMIN");
+        }
         return this.roleRepository.findAll(pageRequest);
     }
 
     @Override
-    @RequiresRoleReadPermission
+    @PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_GUEST')")
     public List<Role> getAll() {
         return this.roleRepository.findAll();
     }
 
     @Override
-    @RequiresRoleReadPermission
-    public Optional<Role> findById(Long aLong) {
-        return this.roleRepository.findById(aLong);
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public Optional<Role> findById(Long id) {
+        if (!isSuperAdmin()) {
+            throw new SecurityException("Access denied: Requires ROLE_SUPERADMIN");
+        }
+        return this.roleRepository.findById(id);
     }
 
     @Override
-    @RequiresRoleUpdatePermission
-    public Optional<Role> update(Long aLong, Role role) {
-        if(this.roleRepository.existsById(aLong)) {
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public Optional<Role> update(Long id, Role role) {
+        if (!isSuperAdmin()) {
+            throw new SecurityException("Access denied: Requires ROLE_SUPERADMIN");
+        }
+        if (this.roleRepository.existsById(id)) {
+            role.setId(id);
             return Optional.of(this.roleRepository.save(role));
         }
         return Optional.empty();
     }
 
     @Override
-    @RequiresRoleDeletePermission
-    public boolean delete(Long aLong) {
-        if(this.roleRepository.existsById(aLong)) {
-            this.roleRepository.deleteById(aLong);
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public boolean delete(Long id) {
+        if (!isSuperAdmin()) {
+            throw new SecurityException("Access denied: Requires ROLE_SUPERADMIN");
+        }
+        if (this.roleRepository.existsById(id)) {
+            this.roleRepository.deleteById(id);
             return true;
         }
         return false;
     }
 
-
     @Override
-    @RequiresRoleCreatePermission
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public Role registerRole(RoleDTO roleDTO) {
+        if (!isSuperAdmin()) {
+            throw new SecurityException("Access denied: Requires ROLE_SUPERADMIN");
+        }
         Role role = new Role();
         role.setRoleName(roleDTO.getRoleName());
         role.setDescription(roleDTO.getDescription());

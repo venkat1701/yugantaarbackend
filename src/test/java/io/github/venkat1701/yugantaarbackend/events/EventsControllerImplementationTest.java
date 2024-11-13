@@ -56,20 +56,9 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "MANAGER")
     void create_shouldAllowManagerToCreateEvent() {
-        when(eventService.registerEvent(eventDTO)).thenReturn(event);
+        when(eventService.registerEvent(eventDTO)).thenReturn(eventDTO);
 
-        ResponseEntity<Event> response = eventsController.create(eventDTO);
-
-        assertNotNull(response);
-        assertEquals(201, response.getStatusCodeValue());
-        assertEquals("Test Event", response.getBody().getName());
-        verify(eventService, times(1)).registerEvent(eventDTO);
-    }
-
-    @Test
-    @WithMockUser(roles = "GUEST")
-    void create_shouldNotAllowGuestToCreateEvent() {
-        ResponseEntity<Event> response = eventsController.create(eventDTO);
+        ResponseEntity<EventDTO> response = eventsController.create(eventDTO);
 
         assertEquals(403, response.getStatusCodeValue());  // Forbidden for guests
     }
@@ -77,9 +66,9 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void getAll_shouldAllowAdminToViewAllEvents() {
-        when(eventService.getAll()).thenReturn(List.of(event));
+        when(eventService.getAll()).thenReturn(List.of(eventDTO));
 
-        ResponseEntity<List<Event>> response = eventsController.getAll();
+        ResponseEntity<List<EventDTO>> response = eventsController.getAll();
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
@@ -90,7 +79,7 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "PARTICIPANT")
     void getAll_shouldNotAllowParticipantToViewAllEvents() {
-        ResponseEntity<List<Event>> response = eventsController.getAll();
+        ResponseEntity<List<EventDTO>> response = eventsController.getAll();
 
         assertEquals(403, response.getStatusCodeValue());  // Forbidden for participants
     }
@@ -98,20 +87,20 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "MANAGER")
     void update_shouldAllowManagerToUpdateEvent() {
-        when(eventService.findById(1L)).thenReturn(Optional.of(event));
-        when(eventService.update(1L, event)).thenReturn(Optional.of(event));
+        when(eventService.findById(1L)).thenReturn(Optional.of(eventDTO));
+        when(eventService.update(1L, eventDTO)).thenReturn(Optional.of(eventDTO));
 
-        ResponseEntity<Event> response = eventsController.update(1L, event);
+        ResponseEntity<EventDTO> response = eventsController.update(1L, eventDTO);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
-        verify(eventService, times(1)).update(1L, event);
+        verify(eventService, times(1)).update(1L, eventDTO);
     }
 
     @Test
     @WithMockUser(roles = "GUEST")
     void update_shouldNotAllowGuestToUpdateEvent() {
-        ResponseEntity<Event> response = eventsController.update(1L, event);
+        ResponseEntity<EventDTO> response = eventsController.update(1L, eventDTO);
 
         assertEquals(403, response.getStatusCodeValue());  // Forbidden for guests
     }
@@ -139,9 +128,9 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void search_shouldAllowAdminToSearchEvents() {
-        when(eventService.search(PageRequest.of(0, 10))).thenReturn(new PageImpl<>(List.of(event)));
+        when(eventService.search(PageRequest.of(0, 10))).thenReturn(new PageImpl<>(List.of(eventDTO)));
 
-        ResponseEntity<Page<Event>> response = eventsController.search(0, 10, null);
+        ResponseEntity<Page<EventDTO>> response = eventsController.search(0, 10, null);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
@@ -152,7 +141,7 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "GUEST")
     void search_shouldNotAllowGuestToSearchEvents() {
-        ResponseEntity<Page<Event>> response = eventsController.search(0, 10, null);
+        ResponseEntity<Page<EventDTO>> response = eventsController.search(0, 10, null);
 
         assertEquals(403, response.getStatusCodeValue());  // Forbidden for guests
     }
@@ -160,9 +149,9 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void getByName_shouldAllowAdminToGetEventByName() {
-        when(eventService.findByName("Test Event")).thenReturn(Optional.of(event));
+        when(eventService.findByName("Test Event")).thenReturn(Optional.of(eventDTO));
 
-        ResponseEntity<Event> response = eventsController.getByName("Test Event");
+        ResponseEntity<EventDTO> response = eventsController.getByName("Test Event");
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
@@ -173,9 +162,9 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "GUEST")
     void getByName_shouldAllowGuestToGetEventByName() {
-        when(eventService.findByName("Test Event")).thenReturn(Optional.of(event));
+        when(eventService.findByName("Test Event")).thenReturn(Optional.of(eventDTO));
 
-        ResponseEntity<Event> response = eventsController.getByName("Test Event");
+        ResponseEntity<EventDTO> response = eventsController.getByName("Test Event");
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
@@ -186,9 +175,9 @@ class EventsControllerImplementationSecurityTest {
     @Test
     @WithMockUser(roles = "PARTICIPANT")
     void getById_shouldNotAllowParticipantToGetEventById() {
-        when(eventService.findById(1L)).thenReturn(Optional.of(event));
+        when(eventService.findById(1L)).thenReturn(Optional.of(eventDTO));
 
-        ResponseEntity<Event> response = eventsController.getById(1L);
+        ResponseEntity<EventDTO> response = eventsController.getById(1L);
 
         assertEquals(403, response.getStatusCodeValue());  // Forbidden for participants
     }

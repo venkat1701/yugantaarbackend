@@ -6,6 +6,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN')")
+@PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
 public @interface RequiresRoleCreatePermission {
 }

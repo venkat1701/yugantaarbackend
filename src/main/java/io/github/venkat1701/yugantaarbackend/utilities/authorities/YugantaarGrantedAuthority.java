@@ -33,6 +33,9 @@ public class YugantaarGrantedAuthority implements GrantedAuthority {
     public YugantaarGrantedAuthority(String authority, String type) {
         this.authority = authority;
         this.type = type;
+
+        System.out.println("Authority: "+this.authority);
+        System.out.println("Type: "+this.type);
     }
 
     /**

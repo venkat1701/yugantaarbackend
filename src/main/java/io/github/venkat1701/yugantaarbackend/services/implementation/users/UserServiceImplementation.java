@@ -8,6 +8,7 @@ import io.github.venkat1701.yugantaarbackend.models.users.UserProfile;
 import io.github.venkat1701.yugantaarbackend.repositories.roles.RoleRepository;
 import io.github.venkat1701.yugantaarbackend.repositories.users.UserRepository;
 import io.github.venkat1701.yugantaarbackend.services.core.users.UserService;
+import io.github.venkat1701.yugantaarbackend.utilities.authorities.YugantaarGrantedAuthority;
 import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresUserDeletePermission;
 import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresUserListPermission;
 import io.github.venkat1701.yugantaarbackend.utilities.permissions.authannotations.RequiresUserReadPermission;
@@ -77,9 +78,9 @@ public class UserServiceImplementation implements UserService {
                     .orElseThrow(() -> new UsernameNotFoundException(username));
 
             Set<Role> roles = user.getRoles();
-            List<SimpleGrantedAuthority> listAuthorities = new ArrayList<>();
+            List<YugantaarGrantedAuthority> listAuthorities = new ArrayList<>();
             for (Role role : roles) {
-                listAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+                listAuthorities.add(new YugantaarGrantedAuthority("ROLE_" + role.getRoleName(), "ROLE"));
             }
             return new YugantaarUserDetails(user);
         } catch (UsernameNotFoundException unfe) {

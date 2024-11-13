@@ -1,8 +1,11 @@
 package io.github.venkat1701.yugantaarbackend.config.security;
 
+import io.github.venkat1701.yugantaarbackend.utilities.permissions.YugantaarPermissionEvaluator;
 import io.github.venkat1701.yugantaarbackend.utilities.security.jwt.JwtValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -34,8 +38,11 @@ import java.util.Arrays;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true
+
+)
 public class SecurityConfig {
 
     /**
@@ -54,10 +61,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> {
                     requests.anyRequest().authenticated();
                 })
-                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class) // Add JWT validation filter
+                .addFilterBefore(new JwtValidator(), UsernamePasswordAuthenticationFilter.class) // Add JWT validation filter
                 .httpBasic(Customizer.withDefaults()) // Enable basic authentication
                 .formLogin(Customizer.withDefaults()) // Enable form login
                 .build();
+    }
+
+    @Bean
+    public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler =
+                new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(new YugantaarPermissionEvaluator());
+        return expressionHandler;
     }
 
     /**

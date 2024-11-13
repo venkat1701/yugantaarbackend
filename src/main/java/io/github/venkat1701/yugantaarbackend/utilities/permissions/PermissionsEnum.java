@@ -38,11 +38,11 @@ public enum PermissionsEnum {
     EVENT_DELETE("Deletes Event", Set.of(MANAGER, ADMIN, SUPERADMIN)),
     EVENT_LIST("Lists Event", Set.of(MANAGER, ADMIN, SUPERADMIN)),
 
-    ROLE_CREATE("Creates Role", Set.of(GUEST,SUPERADMIN)),
-    ROLE_READ("Reads Role", Set.of(GUEST,ADMIN, SUPERADMIN)),
-    ROLE_UPDATE("Updates Role", Set.of(GUEST,SUPERADMIN)),
-    ROLE_DELETE("Deletes Role", Set.of(GUEST,SUPERADMIN)),
-    ROLE_LIST("Lists Role", Set.of(GUEST,SUPERADMIN)),
+    ROLE_CREATE("Creates Role", Set.of(SUPERADMIN)),
+    ROLE_READ("Reads Role", Set.of(ADMIN, SUPERADMIN)),
+    ROLE_UPDATE("Updates Role", Set.of(SUPERADMIN)),
+    ROLE_DELETE("Deletes Role", Set.of(SUPERADMIN)),
+    ROLE_LIST("Lists Role", Set.of(SUPERADMIN)),
     PERMISSION_ASSIGN("Assigns Permission", Set.of(SUPERADMIN)),
     PERMISSION_REVOKE("Revokes Permission", Set.of(SUPERADMIN)),
 

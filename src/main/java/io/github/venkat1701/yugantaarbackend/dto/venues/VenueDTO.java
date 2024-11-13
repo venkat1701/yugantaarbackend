@@ -18,7 +18,4 @@ public class VenueDTO {
     private String contactPerson;
     private String contactEmail;
     private String contactPhone;
-
-
-
 }
