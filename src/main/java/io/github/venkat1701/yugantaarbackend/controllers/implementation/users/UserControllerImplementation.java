@@ -2,6 +2,7 @@ package io.github.venkat1701.yugantaarbackend.controllers.implementation.users;
 
 import io.github.venkat1701.yugantaarbackend.controllers.core.users.UserController;
 
+import io.github.venkat1701.yugantaarbackend.dto.users.UserDTO;
 import io.github.venkat1701.yugantaarbackend.dto.users.auth.GuestSignupDTO;
 import io.github.venkat1701.yugantaarbackend.models.users.User;
 import io.github.venkat1701.yugantaarbackend.services.core.users.UserService;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("/api/v1/users")
-public class UserControllerImplementation implements UserController<User, GuestSignupDTO, Long> {
+public class UserControllerImplementation implements UserController<User, UserDTO, Long> {
 
     private final UserService userService;
 
@@ -27,14 +28,13 @@ public class UserControllerImplementation implements UserController<User, GuestS
     }
 
     @PostMapping("/signup")
-    @Override
-    public ResponseEntity<User> create(@RequestBody GuestSignupDTO entity) {
+    public ResponseEntity<UserDTO> create(@RequestBody GuestSignupDTO entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.registerUser(entity));
     }
 
     @GetMapping("/all")
     @Override
-    public ResponseEntity<List<User>> getAll() {
+    public ResponseEntity<List<UserDTO>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.getAll());
     }
 
@@ -47,7 +47,7 @@ public class UserControllerImplementation implements UserController<User, GuestS
      */
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.findById(id).get());
     }
 
@@ -61,7 +61,7 @@ public class UserControllerImplementation implements UserController<User, GuestS
      */
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id,@RequestBody User entity) {
+    public ResponseEntity<UserDTO> update(@PathVariable Long id,@RequestBody UserDTO entity) {
         if(this.userService.findById(id).isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(this.userService.update(id, entity).get());
         }
@@ -79,7 +79,7 @@ public class UserControllerImplementation implements UserController<User, GuestS
 
     @GetMapping("/search")
     @Override
-    public ResponseEntity<Page<User>> search(@RequestParam int page,@RequestParam int size,@RequestParam String sort) {
+    public ResponseEntity<Page<UserDTO>> search(@RequestParam int page,@RequestParam int size,@RequestParam String sort) {
         PageRequest pageRequest;
         if(sort!=null && !sort.isEmpty()) {
             String[] sortParameters = sort.split(",");
@@ -90,7 +90,7 @@ public class UserControllerImplementation implements UserController<User, GuestS
             pageRequest = PageRequest.of(page, size);
         }
 
-        Page<User> users = this.userService.search(pageRequest);
+        Page<UserDTO> users = this.userService.search(pageRequest);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 }

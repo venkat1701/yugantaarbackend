@@ -7,20 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 public interface UserController<MODEL, DTO, ID>{
-    /**
-     * Create a new resource
-     * @param entity the entity to create
-     * @return ResponseEntity containing the created resource
-     */
-    @PostMapping
-    ResponseEntity<MODEL> create(@RequestBody DTO entity);
+
 
     /**
      * Retrieve all resources
      * @return ResponseEntity containing list of all resources
      */
     @GetMapping
-    ResponseEntity<List<MODEL>> getAll();
+    ResponseEntity<List<DTO>> getAll();
 
     /**
      * Retrieve a resource by its ID
@@ -28,7 +22,7 @@ public interface UserController<MODEL, DTO, ID>{
      * @return ResponseEntity containing the found resource
      */
     @GetMapping("/{id}")
-    ResponseEntity<MODEL> getById(@PathVariable ID id);
+    ResponseEntity<DTO> getById(@PathVariable ID id);
 
     /**
      * Update an existing resource
@@ -37,7 +31,7 @@ public interface UserController<MODEL, DTO, ID>{
      * @return ResponseEntity containing the updated resource
      */
     @PutMapping("/{id}")
-    ResponseEntity<MODEL> update(@PathVariable ID id, @RequestBody MODEL entity);
+    ResponseEntity<DTO> update(@PathVariable ID id, @RequestBody DTO entity);
 
     /**
      * Delete a resource by its ID
@@ -55,7 +49,7 @@ public interface UserController<MODEL, DTO, ID>{
      * @return ResponseEntity containing page of resources
      */
     @GetMapping("/search")
-    ResponseEntity<Page<MODEL>> search(
+    ResponseEntity<Page<DTO>> search(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam(required = false) String sort

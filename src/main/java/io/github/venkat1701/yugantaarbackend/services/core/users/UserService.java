@@ -1,6 +1,7 @@
 package io.github.venkat1701.yugantaarbackend.services.core.users;
 
 import io.github.venkat1701.yugantaarbackend.dto.registrations.RegistrationDTO;
+import io.github.venkat1701.yugantaarbackend.dto.users.UserDTO;
 import io.github.venkat1701.yugantaarbackend.dto.users.auth.GuestSignupDTO;
 import io.github.venkat1701.yugantaarbackend.models.users.User;
 import io.github.venkat1701.yugantaarbackend.services.core.commons.GenericCrudService;
@@ -25,7 +26,7 @@ import java.util.Optional;
  * Author: Venkat
  * </p>
  */
-public interface UserService extends GenericCrudService<User, Long> {
+public interface UserService extends GenericCrudService<UserDTO, Long> {
 
     /**
      * Loads a user by their username for authentication.
@@ -51,7 +52,7 @@ public interface UserService extends GenericCrudService<User, Long> {
      * @return the User object corresponding to the JWT
      * @throws Exception if an error occurs while retrieving the user
      */
-    User findUserProfileByJwt(String jwt) throws Exception;
+    UserDTO findUserProfileByJwt(String jwt) throws Exception;
 
     /**
      * Registers a new user based on the provided registration data.
@@ -59,6 +60,6 @@ public interface UserService extends GenericCrudService<User, Long> {
      * @param registrationDTO the data transfer object containing user registration details
      * @return the newly registered User object
      */
-    User registerUser(GuestSignupDTO registrationDTO);
+    UserDTO registerUser(GuestSignupDTO registrationDTO);
 
 }

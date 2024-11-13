@@ -1,6 +1,8 @@
 package io.github.venkat1701.yugantaarbackend.services.implementation.users;
 
+import io.github.venkat1701.yugantaarbackend.dto.users.UserDTO;
 import io.github.venkat1701.yugantaarbackend.dto.users.auth.GuestSignupDTO;
+import io.github.venkat1701.yugantaarbackend.mappers.implementation.UserMapper;
 import io.github.venkat1701.yugantaarbackend.models.roles.Role;
 import io.github.venkat1701.yugantaarbackend.models.roles.RolesEnum;
 import io.github.venkat1701.yugantaarbackend.models.users.User;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the UserService interface for managing user-related operations.
@@ -47,6 +50,7 @@ public class UserServiceImplementation implements UserService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
 
     /**
      * Constructs a UserServiceImplementation with the necessary dependencies.
@@ -57,11 +61,12 @@ public class UserServiceImplementation implements UserService {
      * @param roleRepository   the repository for role data access
      */
     @Autowired
-    public UserServiceImplementation(UserRepository userRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserServiceImplementation(UserRepository userRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -109,11 +114,11 @@ public class UserServiceImplementation implements UserService {
      */
     @Override
     @RequiresUserReadPermission
-    public User findUserProfileByJwt(String jwt) throws Exception {
+    public UserDTO findUserProfileByJwt(String jwt) throws Exception {
         String email = jwtProvider.getEmailFromToken(jwt);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
-        return user;
+        return this.userMapper.toDTO(user);
     }
 
     /**
@@ -123,7 +128,7 @@ public class UserServiceImplementation implements UserService {
      * @return the newly registered User object, or null if the role is not found
      */
     @Override
-    public User registerUser(GuestSignupDTO guestSignupDTO) {
+    public UserDTO registerUser(GuestSignupDTO guestSignupDTO) {
         Optional<Role> role = roleRepository.findByRoleName(RolesEnum.GUEST.name());
         if (!role.isPresent()) {
             return null; // Role not found, registration cannot proceed
@@ -152,31 +157,31 @@ public class UserServiceImplementation implements UserService {
         user.setPayments(new HashSet<>());
 
         // Saving the user to database.
-        return userRepository.save(user);
+        return this.userMapper.toDTO(userRepository.save(user));
     }
 
     @Override
     @RequiresUserListPermission
-    public Page<User> search(PageRequest pageRequest) {
-        return this.userRepository.findAll(pageRequest);
+    public Page<UserDTO> search(PageRequest pageRequest) {
+        return this.userRepository.findAll(pageRequest).map(this.userMapper::toDTO);
     }
 
     @Override
     @RequiresUserListPermission
-    public List<User> getAll() {
-        return this.userRepository.findAll();
+    public List<UserDTO> getAll() {
+        return this.userRepository.findAll().stream().map(this.userMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return this.userRepository.findById(id);
+    public Optional<UserDTO> findById(Long id) {
+        return Optional.of(this.userMapper.toDTO(this.userRepository.findById(id).get()));
     }
 
     @Override
     @RequiresUserUpdatePermission
-    public Optional<User> update(Long id, User user) {
+    public Optional<UserDTO> update(Long id, UserDTO user) {
         if(this.userRepository.existsById(id)) {
-            return Optional.of(userRepository.save(user));
+            return Optional.of(this.userMapper.toDTO(userRepository.save(this.userMapper.toEntity(user))));
         }
 
         return Optional.empty();
